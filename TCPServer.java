@@ -18,7 +18,7 @@ public class TCPServer {
 		String serverOut;
 		
 		// Socket settings
-		int servPortNum;
+		int servPortNum = 6789;
 		
 		try {
 			// Create handshake socket
