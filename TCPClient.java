@@ -18,8 +18,8 @@ class TCPCLient {
 		String servIn;
 		
 		// Socket settings
-		String clientName;
-		int clientPortNum;
+		String clientName = "localhost";
+		int clientPortNum = 6789;
 		
 		try {
 			// Create client socket
