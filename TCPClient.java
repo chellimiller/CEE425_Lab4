@@ -22,7 +22,6 @@ class TCPCLient {
 		int clientPortNum;
 		
 		try {
-				
 			// Create client socket
 			Socket clSlocket = new Socket("clientName", clientPortNum);
 			
@@ -35,28 +34,19 @@ class TCPCLient {
 			userIn = fromUser.readLine();
 			toServer.writeBytes(userIn + '\n');
 			
-			// Buffer for data input stream
+			// Create buffer and read input stream
 			int bufferLen = fromServer.available();
 			byte[] buffer = new byte[bufferLen];
-			
-			// Read new input from server		
 			fromServer.readFully(buffer);
 			
-			// Convert buffer to String
-			for (byte b:buffer) {
-				// Cast byte to char and add to servIn
-				char c = (char)b;
-				servIn = servIn + b;
-			}
-			
-			// Print out modified string
+			// Convert buffer to string and print
+			servIn = new String(buffer.getData());
 			System.out.println("From Server: " + servIn);
 			
 		} catch (Exception error) {
 			System.out.println(error);
 			
 		} finally {
-			
 			// Close data streams
 			fromUser.close();
 			toServer.close();
