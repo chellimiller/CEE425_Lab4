@@ -10,7 +10,7 @@
 import java.io.*;
 import java.net.*;
 
-class TCPServer {
+public class TCPServer {
 	public static void main (String argv[]) throws Exception {
 		
 		// Input/output strings
@@ -21,14 +21,12 @@ class TCPServer {
 		int servPortNum;
 		
 		try {
-			
 			// Create handshake socket
 			ServerSocket hnSocket = new ServerSocket(servPortNum);
 			
 			// Create input/output streams
 			DataInputStream fromClient;
 			DataOutputStream toClient;
-			
 			
 			while(true) {
 				// Create connection socket
@@ -43,9 +41,13 @@ class TCPServer {
 				byte[] buffer = new byte[bufferLen];	
 				fromClient.readFully(buffer);
 				
-				// Convert buffer to String and print
-				clientIn = new String(buffer.getData());				
-				System.out.println("Received: " + clientIn);
+				// Convert buffer to String, check if "QUIT", and print if not
+				clientIn = new String(buffer.getData());
+				if (clientIn == "QUIT") {
+					break;
+				} else {
+					System.out.println("Received: " + clientIn);
+				}
 				
 				// Convert client input to uppercase
 				serverOut = clientIn.toUpperCase() + '\n';
@@ -54,12 +56,6 @@ class TCPServer {
 				// Send new string back to client
 				toClient.writeBytes(serverOut);
 			}
-			
-		} catch (Exception error) {
-			System.out.println(error);
-			
-		} finally {
-			
 			// Close data streams
 			fromClient.close();
 			toClient.close();
@@ -67,6 +63,11 @@ class TCPServer {
 			// Close sockets
 			cnSocket.close();
 			hnSocket.close();
+			
+		} catch (IOException error) {
+			System.out.println("Exception!!!");
+			System.out.println(error.getMessage());
+			
 		}
 	}
 }
