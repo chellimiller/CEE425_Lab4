@@ -23,16 +23,17 @@ class TCPCLient {
 		
 		try {
 			// Create client socket
-			Socket clSlocket = new Socket("clientName", clientPortNum);
+			Socket clSocket = new Socket("clientName", clientPortNum);
+			
+			// Input/output streams
+			DataOutputStream toServer = new DataOutputStream(clSocket.getOutputStream());
+			DataInputStream fromServer = new DataInputStream(clSocket.getInputStream());
 			
 			while (true) {
-				// Input/output streams
-				BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
-				DataOutputStream toServer = new DataOutputStream(clSlocket.getOutputStream());
-				DataInputStream fromServer = new DataInputStream(clSlocket.getInputStream());
-
 				// Read user input and send to server
+				BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
 				userIn = fromUser.readLine();
+				fromUser.close(); // Close reader
 				toServer.writeBytes(userIn + '\n');
 				
 				// Check if user wants to quit
@@ -51,12 +52,11 @@ class TCPCLient {
 			}
 			
 			// Close data streams
-			fromUser.close();
 			toServer.close();
 			fromServer.close();
 			
 			// Close sockets
-			clSlocket.close();
+			clSocket.close();
 			
 		} catch (Exception error) {
 			System.out.println(error.getMessage());
