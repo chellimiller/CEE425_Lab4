@@ -25,28 +25,31 @@ class TCPCLient {
 			// Create client socket
 			Socket clSlocket = new Socket("clientName", clientPortNum);
 			
-			// Input/output streams
-			BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
-			DataOutputStream toServer = new DataOutputStream(clSlocket.getOutputStream());
-			DataInputStream fromServer = new DataInputStream(clSlocket.getInputStream());
+			while (true) {
+				// Input/output streams
+				BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
+				DataOutputStream toServer = new DataOutputStream(clSlocket.getOutputStream());
+				DataInputStream fromServer = new DataInputStream(clSlocket.getInputStream());
+
+				// Read user input and send to server
+				userIn = fromUser.readLine();
+				toServer.writeBytes(userIn + '\n');
+				
+				// Check if user wants to quit
+				if (userIn == "QUIT") {
+					break;
+				}
+
+				// Create buffer and read input stream
+				int bufferLen = fromServer.available();
+				byte[] buffer = new byte[bufferLen];
+				fromServer.readFully(buffer);
+
+				// Convert buffer to string and print
+				servIn = new String(buffer.getData());
+				System.out.println("From Server: " + servIn);
+			}
 			
-			// Read user input and send to server
-			userIn = fromUser.readLine();
-			toServer.writeBytes(userIn + '\n');
-			
-			// Create buffer and read input stream
-			int bufferLen = fromServer.available();
-			byte[] buffer = new byte[bufferLen];
-			fromServer.readFully(buffer);
-			
-			// Convert buffer to string and print
-			servIn = new String(buffer.getData());
-			System.out.println("From Server: " + servIn);
-			
-		} catch (Exception error) {
-			System.out.println(error);
-			
-		} finally {
 			// Close data streams
 			fromUser.close();
 			toServer.close();
@@ -54,6 +57,10 @@ class TCPCLient {
 			
 			// Close sockets
 			clSlocket.close();
+			
+		} catch (Exception error) {
+			System.out.println(error.getMessage());
+			
 		}
 	}
 }
