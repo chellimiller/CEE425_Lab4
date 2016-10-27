@@ -26,42 +26,46 @@ class UDPCLient {
 		int clientPortNum = 9876;
 		
 		try {
+			while (true) {
+				// Create client socket
+				DatagramSocket clSocket = new DatagramSocket();
+
+				// Get and set IP Address
+				InetAddress clientIP = InetAddress.getByName(clientName);
+
+				// User input stream and DatagramPackets
+				BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
+				DatagramPacket sendPack;
+				DatagramPacket receivePack;
+
+				// Read user input as string, convert to byte array, and send to server
+				userIn = fromUser.readLine();
+				sendData = userIn.getBytes();
+				sendPack = new DatagramPacket(sendData, sendData.length, clientIP, clientPortNum);
+				clSocket.send(sendPack);
 				
-			// Create client socket
-			DatagramSocket clSocket = new DatagramSocket();
-			
-			// Get and set IP Address
-			InetAddress clientIP = InetAddress.getByName(clientName);
-			
-			// User input stream and DatagramPackets
-			BufferedReader fromUser = new BufferedReader(new InputStreamReader(System.in));
-			DatagramPacket sendPack;
-			DatagramPacket receivePack;
-					
-			// Read user input as string, convert to byte array, and send to server
-			userIn = fromUser.readLine();
-			sendData = userIn.getBytes();
-			sendPack = new DatagramPacket(sendData, sendData.length, clientIP, clientPortNum);
-			clSocket.send(sendPack);
-			
-			// Receive DatagramPacket and convert back to string
-			receivePack = new DatagramPacket(receiveData, receiveData.length);	
-			clSocket.receive(receivePack);
-			servIn = new String(receivePack.getData());
-			
-			// Print out modified string
-			System.out.println("From Server: " + servIn);
-			
-		} catch (Exception error) {
-			System.out.println(error);
-			
-		} finally {
-			
+				// Check if connection should be closed down
+				if (userIn == "QUIT") {
+					break;
+				}
+				
+				// Receive DatagramPacket and convert back to string
+				receivePack = new DatagramPacket(receiveData, receiveData.length);	
+				clSocket.receive(receivePack);
+				servIn = new String(receivePack.getData());
+
+				// Print out modified string
+				System.out.println("From Server: " + servIn);
+			}
 			// Close data stream
 			fromUser.close();
 			
 			// Close socket
 			clSocket.close();
+			
+		} catch (Exception error) {
+			System.out.println(error);
+			
 		}
 	}
 }
