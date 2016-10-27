@@ -38,6 +38,11 @@ class UDPServer {
 				servSocket.receiveData(getPack);
 				clientIn = new String(getPack.getData());
 				
+				// Break loop if clientIn is equal to "QUIT"
+				if (clientIn == "QUIT") {
+					break;
+				}
+				
 				// Get Client IP Address and Port
 				InetAddress clientIP = getPack.getAddress();
 				int cPort = getPack.getPort();
@@ -50,15 +55,14 @@ class UDPServer {
 				sendPack = 
 					new DatagramPacket(sendData, sendData.length, clientIP, cPort);
 				servSocket.send(sendPack);
-				
 			}
+			
+			// Close socket
+			servSocket.close();
 			
 		} catch (Exception error) {
 			System.out.println(error);
 			
-		} finally {
-			// Close socket
-			servSocket.close();
 		}
 	}
 }
