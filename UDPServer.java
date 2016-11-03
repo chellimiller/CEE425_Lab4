@@ -17,48 +17,50 @@ class UDPServer {
 		String clientIn;
 		String serverOut;
 		
-		// Create byte arrays for sending/receiving data
+		// Create byte array for sending data
 		byte[] sendData = new byte[1024];
-		byte[] receiveData = new byte[1024];
 		
 		// Socket settings
 		int servPortNum = 9876;
 		
 		try {
-			// Create handshake socket
-			DatagramSocket servSocket = new ServerSocket(servPortNum);
-			
-			// Create DatagramPackets
-			DatagramPacket getPack;
-			DatagramPacket sendPack;
+			// Create connection socket
+			DatagramSocket servSocket = new DatagramSocket(servPortNum);
 			
 			while(true) {
+				
+				// Create byte array for receiving data
+				byte[] receiveData = new byte[1024];
+				
 				// Receive packet from client and convert data to String
-				getPack = new DatagramPacket(receiveData, receiveData.length);
-				servSocket.receiveData(getPack);
-				clientIn = new String(getPack.getData());
+				DatagramPacket receivePacket = 
+					new DatagramPacket(receiveData, receiveData.length);
+				servSocket.receive(receivePacket);
+				clientIn = new String(receivePacket.getData());
 				
-				// Break loop if clientIn is equal to "QUIT"
-				if (clientIn == "QUIT") {
-					break;
+				// If clientIn is null
+				if (clientIn == null) {
+					// Let user know connection's closed
+					System.out.println("\n\nClient closed connection\n\n");
+				} else {
+					// Print client input
+					clientIn = clientIn.replaceAll("\u0000.*", "");
+					System.out.println("\n\nReceived:  " + clientIn);
+					
+					// Get Client IP Address and Port
+					InetAddress clientIP = receivePacket.getAddress();
+					int cPort = receivePacket.getPort();
+					
+					// Modify string received from client and convert to bytes
+					serverOut = clientIn.toUpperCase();
+					sendData = serverOut.getBytes();
+					
+					// Send new string back to client
+					DatagramPacket sendPacket = 
+						new DatagramPacket(sendData, sendData.length, clientIP, cPort);
+					servSocket.send(sendPacket);
 				}
-				
-				// Get Client IP Address and Port
-				InetAddress clientIP = getPack.getAddress();
-				int cPort = getPack.getPort();
-				
-				// Modify string received from client and convert to bytes
-				serverOut = clientIn.toUpperCase();
-				sendData = serverOut.getBytes();
-				
-				// Send new string back to client
-				sendPack = 
-					new DatagramPacket(sendData, sendData.length, clientIP, cPort);
-				servSocket.send(sendPack);
 			}
-			
-			// Close socket
-			servSocket.close();
 			
 		} catch (Exception error) {
 			System.out.println(error);

@@ -24,45 +24,31 @@ public class TCPServer {
 			// Create handshake socket
 			ServerSocket hnSocket = new ServerSocket(servPortNum);
 			
-			// Create input/output streams
-			DataInputStream fromClient;
-			DataOutputStream toClient;
-			
 			while(true) {
 				// Create connection socket
-				Socket cnSocket = hnSocket.accept();
+				Socket cSocket = hnSocket.accept();
 				
 				// Set up input/output streams
-				fromClient = new DataInputStream(cnSocket.getInputStream());
-				toClient = new DataOutputStream(cnSocket.getOutputStream());
+				BufferedReader fromClient = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
+				DataOutputStream toClient = new DataOutputStream(cSocket.getOutputStream());
 				
-				// Create buffer and read input stream
-				int bufferLen = fromClient.available();
-				byte[] buffer = new byte[bufferLen];	
-				fromClient.readFully(buffer);
+				// Read input from client
+				clientIn = fromClient.readLine();
 				
-				// Convert buffer to String, check if "QUIT", and print if not
-				clientIn = new String(buffer.getData());
-				if (clientIn == "QUIT") {
-					break;
+				// If client input is NULL, close connection, otherwise capitalize string and send back
+				if (clientIn == null) {
+					System.out.println("\nConnection Closed\n\n");
+					cSocket.close();
 				} else {
-					System.out.println("Received: " + clientIn);
+					
+					// Print out string from client
+					System.out.println("Received: " + clientIn);		
+					
+					// Convert client input to uppercase and send back
+					serverOut = clientIn.toUpperCase() + '\n';
+					toClient.writeBytes(serverOut);
 				}
-				
-				// Convert client input to uppercase
-				serverOut = clientIn.toUpperCase() + '\n';
-				System.out.println("Modified: " + serverOut);
-				
-				// Send new string back to client
-				toClient.writeBytes(serverOut);
 			}
-			// Close data streams
-			fromClient.close();
-			toClient.close();
-			
-			// Close sockets
-			cnSocket.close();
-			hnSocket.close();
 			
 		} catch (IOException error) {
 			System.out.println("Exception!!!");
