@@ -12,35 +12,36 @@ November 3rd, 2016
 
  
 ##Procedure of Execution:
+
 1. Open two command prompts
 
 2. Navigate to directory with client/server files
 
-... Do for both command prompts 
+ * Do for both command prompts 
 
-... Syntax: **cd "directory path"**
+ Syntax: **cd "directory path"**
 
 3. Make sure .class files are created
 
-..* Type **dir** in one command prompt
+ * Type **dir** in one command prompt
 
-..* If the .class files are missing, create them with **javac**
+ * If the .class files are missing, create them with **javac**
 
-.... Syntax: **javac file.java***
+ Syntax: **javac file.java**
 
 4. In one command prompt, run the server program
 
-... Syntax: **java ServerProgram**
+ Syntax: **java ServerProgram**
 
 5. In another command prompt, run the client program
 
-... Syntax: **java ClientProgram**
+ Syntax: **java ClientProgram**
 
 6. Type a sentence into the client when prompted
 
-..* You will receive the sentence back in all capital letters
+ * You will receive the sentence back in all capital letters
 
-..* You will be prompted again for another sentence
+ * You will be prompted again for another sentence
 
 7. When you want to exit, type the word "quit"
 
